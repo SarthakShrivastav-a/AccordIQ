@@ -13,6 +13,7 @@ database:
   pool_size: 5
   max_overflow: 10
   vector_dimensions: 1024
+  auto_create_tables: true
 
 redis:
   url_env: REDIS_URL
@@ -87,6 +88,25 @@ security:
   signature_tolerance_seconds: 300
   redact_before_persistence: true
   redaction_patterns: [credit_card, slack_token, aws_key, email]
+
+auth:
+  google:
+    client_id_env: GOOGLE_CLIENT_ID
+    client_secret_env: GOOGLE_CLIENT_SECRET
+    redirect_uri: http://localhost:8000/api/auth/google/callback
+    scopes: ["openid", "email", "profile"]
+  jwt:
+    secret_env: ACCORDIQ_JWT_SECRET
+    algorithm: HS256
+    issuer: accordiq
+    audience: accordiq-admin
+    access_token_ttl_minutes: 60
+  invites:
+    allowed_emails: []
+  workspace_domain_map: {}
+  frontend_success_url: http://localhost:3100/auth/callback
+  frontend_error_url: http://localhost:3100/login
+  cors_origins: ["http://localhost:3100", "http://127.0.0.1:3100"]
 
 docker:
   image_repository: sarthak73/accordiq
