@@ -1,4 +1,5 @@
 from accordiq.models.audit import AuditEvent
+from accordiq.models.auth import OAuthState, User, WorkspaceMembership
 from accordiq.models.chunk import MessageChunk
 from accordiq.models.entity import Entity
 from accordiq.models.graph_run import GraphRun
@@ -11,5 +12,6 @@ from accordiq.models.workspace import Workspace
 
 __all__ = [
     "AuditEvent", "MessageChunk", "Entity", "GraphRun", "Installation",
-    "JobRecord", "SlackMessage", "NotionLink", "UserPause", "Workspace",
+    "JobRecord", "OAuthState", "SlackMessage", "NotionLink", "User",
+    "UserPause", "Workspace", "WorkspaceMembership",
 ]

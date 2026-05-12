@@ -25,6 +25,7 @@ class DatabaseSettings(BaseModel):
     pool_size: int = 5
     max_overflow: int = 10
     vector_dimensions: int = 1024
+    auto_create_tables: bool = False
 
     @property
     def url(self) -> str:
@@ -105,6 +106,47 @@ class SecuritySettings(BaseModel):
     redaction_patterns: list[str]
 
 
+class GoogleAuthSettings(BaseModel):
+    client_id_env: str
+    client_secret_env: str
+    redirect_uri: str
+    scopes: list[str]
+
+    @property
+    def client_id(self) -> str:
+        return os.getenv(self.client_id_env, "")
+
+    @property
+    def client_secret(self) -> str:
+        return os.getenv(self.client_secret_env, "")
+
+
+class JwtSettings(BaseModel):
+    secret_env: str
+    algorithm: str
+    issuer: str
+    audience: str
+    access_token_ttl_minutes: int
+
+    @property
+    def secret(self) -> str:
+        return os.getenv(self.secret_env, "")
+
+
+class InviteSettings(BaseModel):
+    allowed_emails: list[str] = Field(default_factory=list)
+
+
+class AuthSettings(BaseModel):
+    google: GoogleAuthSettings
+    jwt: JwtSettings
+    invites: InviteSettings
+    workspace_domain_map: dict[str, str] = Field(default_factory=dict)
+    frontend_success_url: str
+    frontend_error_url: str
+    cors_origins: list[str] = Field(default_factory=list)
+
+
 class DockerSettings(BaseModel):
     image_repository: str
     dev_tag: str
@@ -121,6 +163,7 @@ class Settings(BaseModel):
     workflow: WorkflowSettings
     capture: CaptureSettings
     security: SecuritySettings
+    auth: AuthSettings
     docker: DockerSettings
     raw: dict[str, Any] = Field(default_factory=dict)
 
