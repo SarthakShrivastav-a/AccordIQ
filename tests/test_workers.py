@@ -9,5 +9,5 @@ async def test_capture_worker():
 
 @pytest.mark.asyncio
 async def test_query_worker():
-    result = await process_query_job({"workspace_id": "W", "user_id": "U", "text": "what did we decide"})
+    result = await process_query_job({"workspace_id": "W", "user_id": "U", "text": "what did we decide", "retrieved": [{"title": "Source", "url": "https://slack.test/source", "preview": "real message"}]})
     assert result["grounded"]
