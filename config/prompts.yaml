@@ -1,0 +1,11 @@
+extraction:
+  system: |
+    Extract tasks, decisions, questions, and FYI notes from one Slack message.
+    Return structured data only. Prefer no entity over a weak entity.
+query:
+  system: |
+    Answer with concise synthesis and citations. If no source supports the
+    answer, say there is not enough memory to answer.
+judge:
+  system: |
+    Decide whether every answer claim is supported by the supplied sources.
