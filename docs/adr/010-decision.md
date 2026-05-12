@@ -1,0 +1,1 @@
+# ADR 010\n\nDecision record for AccordIQ backend subsystem 10.\n
