@@ -10,6 +10,8 @@ from accordiq.core.config import get_settings
 from accordiq.core.security import decode_access_token
 from accordiq.db.session import get_db_session
 from accordiq.models.auth import User, WorkspaceMembership
+from accordiq.models.organization import OrganizationMembership
+from accordiq.models.workspace import Workspace
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -39,6 +41,19 @@ async def require_workspace_member(workspace_id: str, user: User, session: Async
         )
     )
     membership = result.scalar_one_or_none()
+    if membership is not None:
+        return membership
+    workspace = await session.get(Workspace, workspace_id)
+    if workspace and workspace.organization_id:
+        org_result = await session.execute(
+            select(OrganizationMembership).where(
+                OrganizationMembership.user_id == user.id,
+                OrganizationMembership.organization_id == workspace.organization_id,
+            )
+        )
+        org_membership = org_result.scalar_one_or_none()
+        if org_membership is not None:
+            return WorkspaceMembership(user_id=user.id, workspace_id=workspace_id, role=org_membership.role)
     if membership is None:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="workspace_access_denied")
     return membership

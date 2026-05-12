@@ -147,6 +147,33 @@ class AuthSettings(BaseModel):
     cors_origins: list[str] = Field(default_factory=list)
 
 
+class SaasOnboardingSettings(BaseModel):
+    required_steps: list[str]
+
+
+class SaasUsageSettings(BaseModel):
+    event_types: list[str]
+
+
+class SaasIntegrationProviderSettings(BaseModel):
+    provider: str
+    status_values: list[str]
+
+
+class SaasIntegrationSettings(BaseModel):
+    slack: SaasIntegrationProviderSettings
+    notion: SaasIntegrationProviderSettings
+
+
+class SaasSettings(BaseModel):
+    default_org_role: str
+    default_member_role: str
+    allowed_org_roles: list[str]
+    onboarding: SaasOnboardingSettings
+    usage: SaasUsageSettings
+    integrations: SaasIntegrationSettings
+
+
 class DockerSettings(BaseModel):
     image_repository: str
     dev_tag: str
@@ -164,6 +191,7 @@ class Settings(BaseModel):
     capture: CaptureSettings
     security: SecuritySettings
     auth: AuthSettings
+    saas: SaasSettings
     docker: DockerSettings
     raw: dict[str, Any] = Field(default_factory=dict)
 

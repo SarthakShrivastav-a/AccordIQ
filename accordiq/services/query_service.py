@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from accordiq.models.graph_run import GraphRun
 from accordiq.models.message import SlackMessage
+from accordiq.models.workspace import Workspace
+from accordiq.services.organization_service import OrganizationService
 
 
 class QueryService:
@@ -29,5 +31,8 @@ class QueryService:
         answer = "I found matching captured context. Review the citations before acting on it." if grounded else "I do not have enough captured context to answer that."
         payload = {"workspace_id": workspace_id, "user_id": user_id, "text": text, "answer": answer, "intent": "recall", "citations": citations, "grounded": grounded}
         session.add(GraphRun(workspace_id=workspace_id, graph_name="query", status="completed", state_json=payload))
+        workspace = await session.get(Workspace, workspace_id)
+        if workspace and workspace.organization_id and grounded:
+            await OrganizationService().record_usage(session, workspace.organization_id, "grounded_query", workspace_id)
         await session.commit()
         return payload
