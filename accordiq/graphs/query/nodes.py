@@ -6,10 +6,7 @@ def plan_node(state: dict) -> dict:
     return {"intent": classify_query(state.get("text", ""))}
 
 def retrieve_node(state: dict) -> dict:
-    text = state.get("text", "")
-    if "unknown" in text.lower():
-        return {"retrieved": []}
-    return {"retrieved": [{"title": "Source message", "url": "https://slack.example/source", "preview": text[:80]}]}
+    return {"retrieved": state.get("retrieved", [])}
 
 def respond_node(state: dict) -> dict:
     sources = state.get("retrieved", [])
