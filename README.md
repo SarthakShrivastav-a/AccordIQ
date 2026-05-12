@@ -1,19 +1,19 @@
 # AccordIQ
 
-AccordIQ turns Slack conversations into durable team agreements: tasks,
-decisions, open questions, and cited recall answers backed by Notion and
-Postgres/pgvector.
+AccordIQ is a SaaS team-memory control plane that turns Slack conversations
+into durable team agreements: tasks, decisions, open questions, cited recall
+answers, and Notion-ready records backed by Postgres/pgvector.
 
-## Backend V1
+## Product
 
-This repository contains the backend and admin console phase:
+This repository contains the backend, SaaS tenancy layer, and admin console:
 
 - FastAPI Slack edge.
 - Redis/arq-style worker boundaries.
 - LangGraph-style extraction and query workflows.
 - Postgres + pgvector data model.
 - Notion system-of-record sync.
-- Admin panel API endpoints for the later frontend phase.
+- Organization, membership, invite, integration, and usage APIs.
 - Next.js admin console with Google OAuth/JWT access.
 - Docker Compose with API, worker, Postgres/pgvector, and Redis.
 
