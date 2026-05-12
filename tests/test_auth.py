@@ -51,8 +51,9 @@ async def test_google_callback_creates_user_and_membership(monkeypatch):
     os.environ["GOOGLE_CLIENT_ID"] = "google-client"
     os.environ["GOOGLE_CLIENT_SECRET"] = "google-secret"
     os.environ["ACCORDIQ_JWT_SECRET"] = "test-jwt-secret-for-accordiq-auth-tests"
+    email = f"person-{uuid.uuid4().hex[:8]}@example.com"
     auth = get_settings().auth.model_copy(deep=True)
-    auth.invites.allowed_emails = ["person@example.com"]
+    auth.invites.allowed_emails = [email]
     auth.workspace_domain_map = {"example.com": "Example Workspace"}
     service = AuthService(auth)
 
@@ -60,12 +61,12 @@ async def test_google_callback_creates_user_and_membership(monkeypatch):
         return {"id_token": "id-token"}
 
     monkeypatch.setattr(service, "_exchange_code", exchange)
-    monkeypatch.setattr(service, "_verify_id_token", lambda _: {"email": "person@example.com", "sub": "google-2", "name": "Person"})
+    monkeypatch.setattr(service, "_verify_id_token", lambda _: {"email": email, "sub": f"google-{uuid.uuid4().hex}", "name": "Person"})
     async with AsyncSessionLocal() as session:
         url = await service.build_google_start_url(session)
         state = url.split("state=", 1)[1].split("&", 1)[0]
         token = await service.handle_google_callback(session, "code", state)
-        assert decode_access_token(token, auth.jwt)["email"] == "person@example.com"
-        user = (await session.execute(select(User).where(User.email == "person@example.com"))).scalar_one()
+        assert decode_access_token(token, auth.jwt)["email"] == email
+        user = (await session.execute(select(User).where(User.email == email))).scalar_one()
         membership = (await session.execute(select(WorkspaceMembership).where(WorkspaceMembership.user_id == user.id))).scalar_one()
         assert membership.role == "admin"

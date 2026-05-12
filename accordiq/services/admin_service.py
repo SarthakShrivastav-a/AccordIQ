@@ -10,18 +10,28 @@ from accordiq.models.entity import Entity
 from accordiq.models.graph_run import GraphRun
 from accordiq.models.job import JobRecord
 from accordiq.models.message import SlackMessage
+from accordiq.models.organization import OrganizationMembership
 from accordiq.models.workspace import Workspace
 
 
 class AdminService:
     async def list_workspaces(self, session: AsyncSession, user: User) -> list[dict]:
-        result = await session.execute(
+        direct = await session.execute(
             select(Workspace, WorkspaceMembership.role)
             .join(WorkspaceMembership, WorkspaceMembership.workspace_id == Workspace.id)
             .where(WorkspaceMembership.user_id == user.id)
             .order_by(Workspace.name)
         )
-        return [self._workspace_dict(workspace, role) for workspace, role in result.all()]
+        items = {workspace.id: self._workspace_dict(workspace, role) for workspace, role in direct.all()}
+        org_result = await session.execute(
+            select(Workspace, OrganizationMembership.role)
+            .join(OrganizationMembership, OrganizationMembership.organization_id == Workspace.organization_id)
+            .where(OrganizationMembership.user_id == user.id)
+            .order_by(Workspace.name)
+        )
+        for workspace, role in org_result.all():
+            items.setdefault(workspace.id, self._workspace_dict(workspace, role))
+        return list(items.values())
 
     async def get_workspace(self, session: AsyncSession, workspace_id: str) -> dict | None:
         workspace = await session.get(Workspace, workspace_id)
@@ -117,6 +127,7 @@ class AdminService:
         settings = workspace.settings_json or {}
         return {
             "workspace_id": workspace.id,
+            "organization_id": workspace.organization_id,
             "name": workspace.name,
             "capture_enabled": workspace.capture_enabled,
             "retention_days": int(settings.get("retention_days", 365)),
