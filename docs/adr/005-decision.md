@@ -1,0 +1,1 @@
+# ADR 005\n\nDecision record for AccordIQ backend subsystem 5.\n
