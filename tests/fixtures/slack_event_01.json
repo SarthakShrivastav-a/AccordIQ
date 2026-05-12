@@ -1,0 +1,8 @@
+{
+  "event_id": "Ev1",
+  "event": {
+    "text": "I will ship fixture 1",
+    "user": "U1",
+    "channel": "C1"
+  }
+}

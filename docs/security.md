@@ -1,0 +1,1 @@
+Tokens are encrypted, customer text is redacted, and every workspace query is scoped.\n

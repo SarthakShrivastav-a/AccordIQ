@@ -1,0 +1,1 @@
+# ADR 020\n\nDecision record for AccordIQ backend subsystem 20.\n

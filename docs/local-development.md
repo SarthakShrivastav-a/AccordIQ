@@ -1,0 +1,1 @@
+Run tests with pytest and validate Docker Compose before opening release PRs.\n
