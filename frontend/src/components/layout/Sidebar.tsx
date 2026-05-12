@@ -2,14 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Briefcase, ClipboardCheck, Gauge, Home, MessageSquare, Settings, ShieldCheck } from "lucide-react";
+import { Activity, Briefcase, ClipboardCheck, Gauge, Home, MessageSquare, Plug, Settings, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
 import { clsx } from "clsx";
 
 const nav = [
   { href: "/", label: "Overview", icon: Home },
+  { href: "/organization", label: "Organization", icon: Users },
   { href: "/workspaces", label: "Workspaces", icon: Briefcase },
+  { href: "/integrations", label: "Integrations", icon: Plug },
+  { href: "/usage", label: "Usage", icon: Gauge },
+  { href: "/capture-policy", label: "Capture Policy", icon: SlidersHorizontal },
   { href: "/entities", label: "Review", icon: ClipboardCheck },
-  { href: "/jobs", label: "Jobs", icon: Gauge },
+  { href: "/jobs", label: "Jobs", icon: Activity },
   { href: "/audit", label: "Audit", icon: Activity },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/query", label: "Query", icon: MessageSquare }
