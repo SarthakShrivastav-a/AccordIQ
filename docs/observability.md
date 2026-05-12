@@ -1,0 +1,1 @@
+Structured logs use workspace_id, event_id, job_id, graph_node, and latency_ms.\n
