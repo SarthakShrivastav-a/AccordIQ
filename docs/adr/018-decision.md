@@ -1,0 +1,1 @@
+# ADR 018\n\nDecision record for AccordIQ backend subsystem 18.\n
