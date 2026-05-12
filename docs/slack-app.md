@@ -1,0 +1,1 @@
+Slack uses HTTP Events API in production. Socket Mode is not part of V1 production.\n
