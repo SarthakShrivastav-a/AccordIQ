@@ -1,0 +1,1 @@
+# ADR 019\n\nDecision record for AccordIQ backend subsystem 19.\n
