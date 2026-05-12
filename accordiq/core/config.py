@@ -1,0 +1,136 @@
+from __future__ import annotations
+
+import os
+from functools import lru_cache
+from pathlib import Path
+from typing import Any
+
+import yaml
+from pydantic import BaseModel, Field
+
+
+class AppSettings(BaseModel):
+    name: str
+    slug: str
+    version: str
+    environment: str
+    api_prefix: str
+    config_version: int
+
+
+class DatabaseSettings(BaseModel):
+    url_env: str
+    default_url: str
+    echo: bool = False
+    pool_size: int = 5
+    max_overflow: int = 10
+    vector_dimensions: int = 1024
+
+    @property
+    def url(self) -> str:
+        return os.getenv(self.url_env, self.default_url)
+
+
+class RedisSettings(BaseModel):
+    url_env: str
+    default_url: str
+    dedupe_ttl_seconds: int
+    queue_name: str
+
+    @property
+    def url(self) -> str:
+        return os.getenv(self.url_env, self.default_url)
+
+
+class SlackSettings(BaseModel):
+    signing_secret_env: str
+    client_id_env: str
+    client_secret_env: str
+    bot_token_env: str
+    ack_timeout_seconds: int
+    app_name: str
+    command_name: str
+    scopes: list[str]
+    events: list[str]
+
+
+class NotionSettings(BaseModel):
+    api_version: str
+    client_id_env: str
+    client_secret_env: str
+    database_name: str
+    id_property: str
+    requests_per_second: int
+
+
+class ModelSettings(BaseModel):
+    provider: str
+    model: str
+    temperature: float = 0
+    api_key_env: str
+    dimensions: int | None = None
+
+
+class AISettings(BaseModel):
+    extraction: ModelSettings
+    judge: ModelSettings
+    responder: ModelSettings
+    embeddings: ModelSettings
+
+
+class WorkflowSettings(BaseModel):
+    confidence_threshold: float
+    rewrite_limit: int
+    top_k: int
+    chunk_tokens: int
+    chunk_overlap_tokens: int
+    default_retention_days: int
+    allowed_retention_days: list[int]
+    query_intents: list[str]
+    entity_types: list[str]
+
+
+class CaptureSettings(BaseModel):
+    default_mode: str
+    ignore_bot_messages: bool
+    include_private_channels_when_invited: bool
+    pause_hours: int
+    emojis: dict[str, str]
+
+
+class SecuritySettings(BaseModel):
+    encryption_key_env: str
+    signature_tolerance_seconds: int
+    redact_before_persistence: bool
+    redaction_patterns: list[str]
+
+
+class DockerSettings(BaseModel):
+    image_repository: str
+    dev_tag: str
+    main_tag: str
+
+
+class Settings(BaseModel):
+    app: AppSettings
+    database: DatabaseSettings
+    redis: RedisSettings
+    slack: SlackSettings
+    notion: NotionSettings
+    ai: AISettings
+    workflow: WorkflowSettings
+    capture: CaptureSettings
+    security: SecuritySettings
+    docker: DockerSettings
+    raw: dict[str, Any] = Field(default_factory=dict)
+
+
+def load_settings(path: str | Path | None = None) -> Settings:
+    config_path = Path(path or os.getenv("ACCORDIQ_CONFIG_PATH", "config/app.yaml"))
+    data = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    return Settings(**data, raw=data)
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    return load_settings()
