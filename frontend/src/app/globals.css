@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #fffaf0;
+  --ink: #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: #f4b400;
+  color: #111111;
+}
+
+.brutal-border {
+  border: 2px solid #111111;
+  box-shadow: 6px 6px 0 #111111;
+}
