@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  output: "standalone"
-};
+    const nextConfig: NextConfig = {
+      reactStrictMode: true,
+      output: "standalone",
+      outputFileTracingRoot: process.cwd(),
+      allowedDevOrigins: ["http://127.0.0.1:3100"]
+    };
 
 export default nextConfig;
