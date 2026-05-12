@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import secrets
-from datetime import timedelta
+from datetime import timezone, timedelta
 from urllib.parse import urlencode
 
 import httpx
@@ -66,9 +66,14 @@ class AuthService:
     async def _consume_state(self, session: AsyncSession, state: str) -> None:
         result = await session.execute(select(OAuthState).where(OAuthState.state_hash == hash_oauth_state(state)))
         oauth_state = result.scalar_one_or_none()
-        if not oauth_state or oauth_state.consumed_at is not None or oauth_state.expires_at < utc_now():
+        if not oauth_state or oauth_state.consumed_at is not None or self._as_aware(oauth_state.expires_at) < utc_now():
             raise AuthError("invalid_oauth_state")
         oauth_state.consumed_at = utc_now()
+
+    def _as_aware(self, value):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value
 
     async def _exchange_code(self, code: str) -> dict:
         if not self.auth.google.client_secret:
