@@ -13,7 +13,7 @@ export default defineConfig({
     trace: "on-first-retry"
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } }
+    { name: "chrome", use: { ...devices["Desktop Chrome"], channel: "chrome" } },
+    { name: "mobile-chrome", use: { ...devices["Pixel 7"], channel: "chrome" } }
   ]
 });
