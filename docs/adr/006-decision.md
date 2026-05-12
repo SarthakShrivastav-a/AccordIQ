@@ -1,0 +1,1 @@
+# ADR 006\n\nDecision record for AccordIQ backend subsystem 6.\n
