@@ -1,0 +1,94 @@
+app:
+  name: AccordIQ
+  slug: accordiq
+  version: 0.1.0
+  environment: development
+  api_prefix: /api
+  config_version: 1
+
+database:
+  url_env: DATABASE_URL
+  default_url: sqlite+aiosqlite:///./accordiq.db
+  echo: false
+  pool_size: 5
+  max_overflow: 10
+  vector_dimensions: 1024
+
+redis:
+  url_env: REDIS_URL
+  default_url: redis://localhost:6379/0
+  dedupe_ttl_seconds: 86400
+  queue_name: accordiq
+
+slack:
+  signing_secret_env: SLACK_SIGNING_SECRET
+  client_id_env: SLACK_CLIENT_ID
+  client_secret_env: SLACK_CLIENT_SECRET
+  bot_token_env: SLACK_BOT_TOKEN
+  ack_timeout_seconds: 3
+  app_name: AccordIQ
+  command_name: /accordiq
+  scopes: ["app_mentions:read", "channels:history", "groups:history", "im:history", "mpim:history", "chat:write", "commands", "reactions:read", "users:read"]
+  events: ["message.channels", "message.groups", "message.mpim", "message.im", "reaction_added", "reaction_removed", "app_mention", "app_home_opened"]
+
+notion:
+  api_version: "2026-03-11"
+  client_id_env: NOTION_CLIENT_ID
+  client_secret_env: NOTION_CLIENT_SECRET
+  database_name: AccordIQ - Tasks
+  id_property: accordiq_id
+  requests_per_second: 3
+
+ai:
+  extraction:
+    provider: anthropic
+    model: claude-sonnet-4-6
+    temperature: 0
+    api_key_env: ANTHROPIC_API_KEY
+  judge:
+    provider: anthropic
+    model: claude-haiku-4-5
+    temperature: 0
+    api_key_env: ANTHROPIC_API_KEY
+  responder:
+    provider: anthropic
+    model: claude-sonnet-4-6
+    temperature: 0.2
+    api_key_env: ANTHROPIC_API_KEY
+  embeddings:
+    provider: voyage
+    model: voyage-3-large
+    dimensions: 1024
+    api_key_env: EMBEDDING_API_KEY
+
+workflow:
+  confidence_threshold: 0.55
+  rewrite_limit: 2
+  top_k: 8
+  chunk_tokens: 500
+  chunk_overlap_tokens: 80
+  default_retention_days: 365
+  allowed_retention_days: [30, 90, 180, 365, 0]
+  query_intents: [status, recall, people, timeline, unknowns]
+  entity_types: [task, decision, question, fyi]
+
+capture:
+  default_mode: invited_channels
+  ignore_bot_messages: true
+  include_private_channels_when_invited: true
+  pause_hours: 24
+  emojis:
+    important: pushpin
+    done: white_check_mark
+    ignore: no_entry_sign
+
+security:
+  encryption_key_env: ACCORDIQ_ENCRYPTION_KEY
+  signature_tolerance_seconds: 300
+  redact_before_persistence: true
+  redaction_patterns: [credit_card, slack_token, aws_key, email]
+
+docker:
+  image_repository: sarthak73/accordiq
+  dev_tag: dev-latest
+  main_tag: latest

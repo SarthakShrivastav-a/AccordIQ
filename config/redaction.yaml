@@ -1,0 +1,6 @@
+patterns:
+  credit_card: "\\b(?:\\d[ -]*?){13,16}\\b"
+  slack_token: "xox[baprs]-[A-Za-z0-9-]+"
+  aws_key: "AKIA[0-9A-Z]{16}"
+  email: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b"
+replacement: "[REDACTED]"

@@ -1,0 +1,8 @@
+logs:
+  format: json
+  level: INFO
+tracing:
+  enabled_env: LANGCHAIN_TRACING_V2
+  service_name: accordiq
+metrics:
+  namespace: accordiq
