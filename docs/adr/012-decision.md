@@ -1,0 +1,1 @@
+# ADR 012\n\nDecision record for AccordIQ backend subsystem 12.\n

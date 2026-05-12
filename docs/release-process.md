@@ -1,0 +1,1 @@
+Feature branches merge to dev. Release PRs merge dev to main. Docker publish runs on merged PRs.\n

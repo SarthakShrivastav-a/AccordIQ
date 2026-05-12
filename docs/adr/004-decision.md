@@ -1,0 +1,1 @@
+# ADR 004\n\nDecision record for AccordIQ backend subsystem 4.\n

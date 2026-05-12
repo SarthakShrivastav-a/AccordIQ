@@ -1,0 +1,1 @@
+Admin endpoints provide all data needed by the Phase 2 frontend panel.\n

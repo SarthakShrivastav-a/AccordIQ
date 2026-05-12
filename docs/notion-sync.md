@@ -1,0 +1,1 @@
+AccordIQ owns a fixed Notion database schema and syncs entities idempotently.\n

@@ -1,0 +1,1 @@
+One image runs API and worker commands. Compose includes Postgres/pgvector and Redis.\n

@@ -1,0 +1,1 @@
+# ADR 007\n\nDecision record for AccordIQ backend subsystem 7.\n
