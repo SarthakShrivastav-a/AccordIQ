@@ -1,0 +1,1 @@
+# ADR 003\n\nDecision record for AccordIQ backend subsystem 3.\n
