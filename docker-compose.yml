@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: accordiq
+      POSTGRES_USER: accordiq
+      POSTGRES_PASSWORD: accordiq
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U accordiq"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  api:
+    build: .
+    command: uvicorn accordiq.main:app --host 0.0.0.0 --port 8000
+    env_file: .env.example
+    environment:
+      DATABASE_URL: postgresql+asyncpg://accordiq:accordiq@postgres:5432/accordiq
+      REDIS_URL: redis://redis:6379/0
+      ACCORDIQ_SKIP_SLACK_SIGNATURE: "1"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  worker:
+    build: .
+    command: python -m accordiq.workers.app
+    env_file: .env.example
+    environment:
+      DATABASE_URL: postgresql+asyncpg://accordiq:accordiq@postgres:5432/accordiq
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
