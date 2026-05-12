@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-test("overview renders without going blank", async ({ page }) => {
-      await page.goto("/");
-      await expect(page.getByText("Team memory, under control.")).toBeVisible();
-      await expect(page.getByRole("main").getByText("Workspaces")).toBeVisible();
-    });
+test("unauthenticated overview redirects to login", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Continue with Google")).toBeVisible();
+});
 
-test("query playground renders", async ({ page }) => {
-  await page.goto("/query");
-  await expect(page.getByText("Ask the memory.")).toBeVisible();
+test("login page renders", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByText("AccordIQ")).toBeVisible();
+  await expect(page.getByText("Continue with Google")).toBeVisible();
 });

@@ -4,7 +4,8 @@ export type Workspace = {
   capture_enabled: boolean;
   retention_days: number;
   channel_mode: string;
-  last_activity: string;
+  last_activity: string | null;
+  role?: string | null;
 };
 
 export type Entity = {
@@ -28,4 +29,28 @@ export type QueryResponse = {
   intent: string;
   grounded: boolean;
   citations: { title: string; url: string; preview: string }[];
+};
+
+export type Membership = {
+  workspace_id: string;
+  role: string;
+};
+
+export type User = {
+  id: string;
+  email: string;
+  name?: string | null;
+  picture?: string | null;
+  memberships: Membership[];
+};
+
+export type AuditEvent = {
+  id: string;
+  workspace_id: string;
+  actor_id?: string | null;
+  action: string;
+  target_type: string;
+  target_id?: string | null;
+  payload: Record<string, unknown>;
+  created_at?: string | null;
 };
