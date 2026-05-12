@@ -108,6 +108,22 @@ auth:
   frontend_error_url: http://localhost:3100/login
   cors_origins: ["http://localhost:3100", "http://127.0.0.1:3100"]
 
+saas:
+  default_org_role: owner
+  default_member_role: viewer
+  allowed_org_roles: [owner, admin, viewer]
+  onboarding:
+    required_steps: [create_org, connect_slack, connect_notion, review_capture_policy]
+  usage:
+    event_types: [captured_message, extracted_entity, grounded_query, notion_sync]
+  integrations:
+    slack:
+      provider: slack
+      status_values: [not_connected, pending, connected, error]
+    notion:
+      provider: notion
+      status_values: [not_connected, pending, connected, error]
+
 docker:
   image_repository: sarthak73/accordiq
   dev_tag: dev-latest

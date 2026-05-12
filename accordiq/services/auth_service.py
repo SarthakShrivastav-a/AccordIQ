@@ -15,6 +15,7 @@ from accordiq.core.security import create_access_token, hash_oauth_state
 from accordiq.core.time import utc_now
 from accordiq.models.auth import OAuthState, User, WorkspaceMembership
 from accordiq.models.workspace import Workspace
+from accordiq.services.organization_service import OrganizationService
 
 
 class AuthError(Exception):
@@ -116,6 +117,11 @@ class AuthService:
         return user
 
     async def _ensure_workspace_membership(self, session: AsyncSession, user: User) -> None:
+        orgs = await OrganizationService().list_organizations(session, user)
+        if not orgs:
+            org_name = self.auth.workspace_domain_map.get(user.email.split("@", 1)[1], user.email.split("@", 1)[1])
+            await OrganizationService().create_organization(session, user, org_name)
+            return
         domain = user.email.split("@", 1)[1]
         workspace_name = self.auth.workspace_domain_map.get(domain, domain)
         result = await session.execute(select(Workspace).where(Workspace.slack_team_id == domain))

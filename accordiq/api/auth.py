@@ -11,7 +11,8 @@ from accordiq.api.deps import get_current_user
 from accordiq.core.config import get_settings
 from accordiq.db.session import get_db_session
 from accordiq.models.auth import User, WorkspaceMembership
-from accordiq.schemas.auth import MembershipRead, UserRead
+from accordiq.models.organization import OrganizationMembership
+from accordiq.schemas.auth import MembershipRead, OrganizationMembershipRead, UserRead
 from accordiq.services.auth_service import AuthError, AuthService
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -42,7 +43,9 @@ async def google_callback(code: str | None = None, state: str | None = None, ses
 async def me(user: User = Depends(get_current_user), session: AsyncSession = Depends(get_db_session)):
     result = await session.execute(select(WorkspaceMembership).where(WorkspaceMembership.user_id == user.id))
     memberships = [MembershipRead(workspace_id=item.workspace_id, role=item.role) for item in result.scalars().all()]
-    return UserRead(id=user.id, email=user.email, name=user.name, picture=user.picture, memberships=memberships)
+    org_result = await session.execute(select(OrganizationMembership).where(OrganizationMembership.user_id == user.id))
+    organizations = [OrganizationMembershipRead(organization_id=item.organization_id, role=item.role) for item in org_result.scalars().all()]
+    return UserRead(id=user.id, email=user.email, name=user.name, picture=user.picture, memberships=memberships, organizations=organizations)
 
 
 @router.post("/logout")
